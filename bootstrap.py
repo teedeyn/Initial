@@ -1,0 +1,45 @@
+"""
+If setuptools is not already installed in the environment, it's not possible
+to invoke setuptools' own commands. This routine will bootstrap this local
+environment by creating a minimal egg-info directory sufficient for
+setuptools to build its own egg-info.
+"""
+
+import os
+import textwrap
+import io
+
+
+minimal_egg_info = textwrap.dedent("""
+    [distutils.commands]
+    egg_info = setuptools.command.egg_info:egg_info
+
+    [distutils.setup_keywords]
+    include_package_data = setuptools.dist:assert_bool
+    install_requires = setuptools.dist:check_requirements
+    extras_require = setuptools.dist:check_extras
+    entry_points = setuptools.dist:check_entry_points
+
+    [egg_info.writers]
+    PKG-INFO = setuptools.command.egg_info:write_pkg_info
+    dependency_links.txt = setuptools.command.egg_info:overwrite_arg
+    entry_points.txt = setuptools.command.egg_info:write_entries
+    requires.txt = setuptools.command.egg_info:write_requirements
+    """)
+
+
+def ensure_egg_info():
+    os.path.exists('setuptools.egg-info') or add_minimal_info()
+
+
+def add_minimal_info():
+    """
+    Build a minimal egg-info, enough to invoke egg_info
+    """
+    print("Adding minimal entry_points.")
+    os.mkdir('setuptools.egg-info')
+    with io.open('setuptools.egg-info/entry_points.txt', 'w') as ep:
+        ep.write(minimal_egg_info)
+
+
+__name__ == '__main__' and ensure_egg_info()
