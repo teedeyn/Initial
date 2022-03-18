@@ -1,0 +1,19 @@
+Documentation
+=============
+
+Setuptools is a fully-featured, actively-maintained, and stable library
+designed to facilitate packaging Python projects.
+
+Documentation content:
+
+.. toctree::
+   :maxdepth: 2
+
+   setuptools
+   pkg_resources
+   python3
+   development
+   roadmap
+   Deprecated: Easy Install <easy_install>
+   distutils-legacy
+   history
